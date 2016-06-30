@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    .province {
+        stroke: white;
+        stroke-width: 1px;
+    }
+
+    .southsea {
+        stroke: black;
+        stroke-width: 1px;
+        fill: #ccc;
+    }
+</style>
+<body>
+<div id="map">
+</div>
+<script src="node_modules/d3/build/d3.js"></script>
+<script>
+    var width = 1000;
+    var height = 1000;
+    var svg = d3.select("#map").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+    console.log(d3.geo);
+    var projection = d3.geoMercator()
+            .center([107, 31])
+            .scale(850)
+            .translate([width / 2, height / 2]);
+    var path = d3.geoPath()
+            .projection(projection);
+    var color = d3.schemeCategory20;
+    d3.json("china.geojson", function (error, root) {
+        if (error) {
+            return console.error(error);
+        }
+        console.log(root);
+        var groups = svg.append("g");
+        groups.selectAll("path")
+                .data(root.features)
+                .enter()
+                .append("path")
+                .attr("class", "province")
+                .style("fill", function (d, i) {
+                    return '#ccc';
+                    //color[i];
+                })
+                .attr("d", path)
+                .each(function (d) {
+                    var area = path.area(d);
+                    var centroid = path.centroid(d);
+                    var bounds = path.bounds(d);
+
+                    svg.append("circle")
+                            .attr("class", "centroid")
+                            .attr("cx", centroid[0])
+                            .attr("cy", centroid[1])
+                            .attr("r", 3);
+                })
+    });
+
+    d3.xml("southchinasea.svg", function (error, xmlDocument) {
+        svg.html(function (d) {
+            return d3.select(this).html() +
+                    xmlDocument.getElementsByTagName("g")[0].outerHTML;
+        });
+        d3.select("#southsea")
+                .attr("transform", "translate(800,600)scale(0.5)")
+                .attr("class", "southsea")
+    });
+</script>
+</body>
+</html>
