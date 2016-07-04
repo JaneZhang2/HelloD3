@@ -18,6 +18,12 @@
   },
   "homepage": "https://github.com/JaneZhang2/HelloD3#readme",
   "dependencies": {
-    "d3": "^4.0.0"
+    "d3": "^4.0.0",
+    "normalize.css": "^4.2.0",
+    "topojson": "^1.6.26"
+  },
+  "devDependencies": {
+    "jquery": "^3.0.0",
+    "zepto": "^1.0.1"
   }
 }
